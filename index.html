@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>PyleaMUN - Registered Personnel List</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E8EAE6;
+            color: #333;
+        }
+        .letterhead {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #D6DBD2;
+            border-bottom: 2px solid #444;
+            padding: 10px 20px;
+            height: 100px;
+        }
+        .address, .contact {
+            width: 25%;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .contact {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .contact div {
+            margin: 2px 0;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+        }
+        .letterhead a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .letterhead a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 2em;
+            max-width: 1200px; /* Wider for table data */
+            margin: auto;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #005b63;
+        }
+        .school-group {
+            background: #ffffff;
+            padding: 1.5em 2em;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2em;
+            overflow-x: auto; /* Allow horizontal scrolling on small screens */
+        }
+        .school-name {
+            color: #005b63;
+            border-bottom: 2px solid #b2dfdb;
+            padding-bottom: 10px;
+            margin-top: 0;
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+        th, td {
+            padding: 0.8em 1em;
+            border: 1px solid #ccc;
+            text-align: left;
+            font-size: 0.95em;
+        }
+        th {
+            background-color: #b2dfdb;
+            color: #004d40;
+            font-weight: bold;
+        }
+        td {
+            background-color: #f8fdfd;
+        }
+        tr:nth-child(even) td {
+            background-color: #effaf9;
+        }
+        .controls {
+            text-align: center;
+            margin-bottom: 2em;
+            display: flex;
+            gap: 1em;
+            justify-content: center;
+        }
+        .action-btn {
+            background-color: #00b4a0;
+            color: white;
+            font-size: 1.1em;
+            padding: 0.8em 1.5em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .action-btn:hover {
+            background-color: #00897b;
+            transform: scale(1.05);
+        }
+        .clear-btn {
+            background-color: #d32f2f;
+        }
+        .clear-btn:hover {
+            background-color: #c62828;
+        }
+        @media (max-width: 768px) {
+            .letterhead {
+                flex-direction: column;
+                height: auto;
+                text-align: center;
+            }
+            .address, .contact {
+                width: 100%;
+                align-items: center;
+                margin-top: 10px;
+            }
+            .logo {
+                margin: 15px 0;
+            }
+             main {
+                padding: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="letterhead">
+        <div class="address">
+            <strong>4 Isminis Str.</strong><br>
+            Pylaia, Thessaloniki - 55535
+        </div>
+        <div>
+            <img src="https://pyleamun.github.io/interview-guide/pyleaMUNfinallogo_transparent.png" alt="PyleaMUN Logo" class="logo">
+        </div>
+        <div class="contact">
+            <div>📞 +30 2310329199</div>
+            <div>📧 <a href="mailto:pyleamun@gmail.com">pyleamun@gmail.com</a></div>
+            <div>🌐 <a href="https://pyleamun.github.io/pyleamun2026/" target="_blank">pyleamun.github.io/pyleamun2026</a></div>
+        </div>
+    </div>
+
+    <main>
+        <h1>Registered Personnel List</h1>
+
+        <div class="controls">
+            <a href="https://[your-github-username].github.io/[your-entry-form-repo-name]/" class="action-btn">Register Another Person</a>
+            <button id="clearDataBtn" class="action-btn clear-btn">Clear All Registrations</button>
+        </div>
+
+        <div id="registrationListContainer">
+            </div>
+    </main>
+
+    <script>
+        window.addEventListener('load', function() {
+            const registrations = JSON.parse(localStorage.getItem('registrations')) || [];
+            const container = document.getElementById('registrationListContainer');
+
+            if (registrations.length === 0) {
+                container.innerHTML = '<h2 style="text-align:center; color: #555;">No registration data found.</h2>';
+                return;
+            }
+
+            // Group registrations by school
+            const registrationsBySchool = registrations.reduce((acc, person) => {
+                const school = person.school || 'Unaffiliated';
+                if (!acc[school]) {
+                    acc[school] = [];
+                }
+                acc[school].push(person);
+                return acc;
+            }, {});
+
+            // Generate and display the HTML for each school group
+            for (const schoolName in registrationsBySchool) {
+                const schoolDiv = document.createElement('div');
+                schoolDiv.className = 'school-group';
+
+                let tableHTML = `
+                    <h2 class="school-name">🏫 ${schoolName}</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Email</th>
+                                <th>Committee</th>
+                                <th>Country</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                registrationsBySchool[schoolName].forEach(person => {
+                    tableHTML += `
+                        <tr>
+                            <td>${person.firstName} ${person.surname}</td>
+                            <td>${person.role || 'N/A'}</td>
+                            <td><a href="mailto:${person.email}">${person.email}</a></td>
+                            <td>${person.committee || 'N/A'}</td>
+                            <td>${person.country || 'N/A'}</td>
+                            <td>${person.notes || ''}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += '</tbody></table>';
+                schoolDiv.innerHTML = tableHTML;
+                container.appendChild(schoolDiv);
+            }
+        });
+
+        // MODIFICATION START: Logic for the button is updated with password prompt
+        document.getElementById('clearDataBtn').addEventListener('click', function() {
+            // 1. Use prompt() to ask for the password
+            const enteredPassword = prompt("This is a destructive action. Please enter the administrator password to proceed:");
+
+            // 2. Check if the user clicked "Cancel"
+            if (enteredPassword === null) {
+                alert("Action cancelled.");
+                return; // Stop the function here
+            }
+
+            // 3. Check if the entered password is correct
+            if (enteredPassword === '5691') {
+                // 4. As a final safeguard, confirm the action one last time
+                if (confirm('Password correct. Are you absolutely sure you want to delete all registrations? This cannot be undone.')) {
+                    localStorage.removeItem('registrations');
+                    alert('All registration data has been cleared.');
+                    location.reload(); // Refresh the page to show it's empty
+                }
+            } else {
+                // 5. Handle the case of an incorrect password
+                alert('Incorrect password. Action cancelled.');
+            }
+        });
+        // MODIFICATION END
+    </script>
+
+</body>
+</html>
