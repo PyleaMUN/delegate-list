@@ -157,10 +157,10 @@
     </div>
 
     <main>
-        <h1>Registered Human Resources</h1>
+        <h1>Registered Personnel List</h1>
 
         <div class="controls">
-            <a href="https://[your-github-username].github.io/[your-entry-form-repo-name]/" class="action-btn">Register Another Person</a>
+            <a href="https://pyleamun.github.io/delegate-entry/" class="action-btn">Register Another Person</a>
             <button id="clearDataBtn" class="action-btn clear-btn">Clear All Registrations</button>
         </div>
 
@@ -228,31 +228,25 @@
             }
         });
 
-        // MODIFICATION START: Logic for the button is updated with password prompt
         document.getElementById('clearDataBtn').addEventListener('click', function() {
-            // 1. Use prompt() to ask for the password
             const enteredPassword = prompt("This is a destructive action. Please enter the administrator password to proceed:");
 
-            // 2. Check if the user clicked "Cancel"
             if (enteredPassword === null) {
                 alert("Action cancelled.");
-                return; // Stop the function here
+                return;
+                
             }
 
-            // 3. Check if the entered password is correct
             if (enteredPassword === '5691') {
-                // 4. As a final safeguard, confirm the action one last time
                 if (confirm('Password correct. Are you absolutely sure you want to delete all registrations? This cannot be undone.')) {
                     localStorage.removeItem('registrations');
                     alert('All registration data has been cleared.');
-                    location.reload(); // Refresh the page to show it's empty
+                    location.reload();
                 }
             } else {
-                // 5. Handle the case of an incorrect password
                 alert('Incorrect password. Action cancelled.');
             }
         });
-        // MODIFICATION END
     </script>
 
 </body>
